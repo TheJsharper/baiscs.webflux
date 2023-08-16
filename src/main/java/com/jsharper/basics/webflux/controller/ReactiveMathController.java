@@ -37,5 +37,10 @@ public class ReactiveMathController {
 
 		return this.mathService.multiplicationTable(input);
 	}
+	@GetMapping(value = "table/{input}/stream-list", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public Flux<Response> multiplicationTableListStream(@PathVariable int input) {
+		
+		return this.mathService.multiplicationTableList(input);
+	}
 
 }
