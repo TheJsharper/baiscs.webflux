@@ -22,13 +22,18 @@ public class RouterConfig {
 	private RequestHandler requestHandler;
 
 	@Bean
-	public RouterFunction<ServerResponse> serverResponseRouterfn() {
+	public RouterFunction<ServerResponse> baseLevelRouter() {
+		return RouterFunctions.route().path("fn-router", this::serverResponseRouterfn).build();
+	}
+
+	// @Bean
+	private RouterFunction<ServerResponse> serverResponseRouterfn() {
 
 		return RouterFunctions.route().GET("fn-router/square/{input}", requestHandler::squareHandler)
-				.GET("fn-router/table/{input}", requestHandler::tableHandler)
-				.GET("fn-router/table/{input}/stream", requestHandler::tableStreamHandler)
-				.POST("fn-router/multiply", requestHandler::multiplyHandler)
-				.GET("fn-router/square/{input}/throwable", requestHandler::squareWithValidationHandler)
+				.GET("table/{input}", requestHandler::tableHandler)
+				.GET("table/{input}/stream", requestHandler::tableStreamHandler)
+				.POST("multiply", requestHandler::multiplyHandler)
+				.GET("square/{input}/throwable", requestHandler::squareWithValidationHandler)
 				.onError(InputValidationException.class, exceptionHandler()).build();
 	}
 
@@ -39,7 +44,7 @@ public class RouterConfig {
 			response.setInput(ex.getInput());
 			response.setMessage(ex.getMessage());
 			response.setErrorCode(ex.getErrocode());
-			System.out.println("===>" +response);
+			System.out.println("===>" + response);
 			return ServerResponse.badRequest().bodyValue(response);
 		};
 	}
