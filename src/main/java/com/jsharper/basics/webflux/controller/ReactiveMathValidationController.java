@@ -1,6 +1,7 @@
 package com.jsharper.basics.webflux.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,18 @@ public class ReactiveMathValidationController {
 				sink.error(new InputValidationException(input));
 
 		}).cast(Integer.class).flatMap(value -> this.mathService.findSquare(input));
+
+	}
+
+	@GetMapping("square/{input}/with-filter")
+	public Mono<ResponseEntity<Response>> withfilter(@PathVariable int input) {
+		return Mono.just(input)
+
+				.filter((Integer value) -> value >= 10 && value <= 20)
+				.flatMap(value -> this.mathService.findSquare(input)).map(ResponseEntity::ok)
+				.defaultIfEmpty(ResponseEntity.badRequest().build())
+
+		;
 
 	}
 }
