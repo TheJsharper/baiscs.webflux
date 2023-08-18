@@ -29,7 +29,8 @@ public class RouterConfig {
 	// @Bean
 	private RouterFunction<ServerResponse> serverResponseRouterfn() {
 
-		return RouterFunctions.route().GET("fn-router/square/{input}", requestHandler::squareHandler)
+		return RouterFunctions.route()
+				.GET("square/{input}", requestHandler::squareHandler)
 				.GET("table/{input}", requestHandler::tableHandler)
 				.GET("table/{input}/stream", requestHandler::tableStreamHandler)
 				.POST("multiply", requestHandler::multiplyHandler)
