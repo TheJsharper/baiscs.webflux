@@ -42,13 +42,14 @@ public class BadRequestTest extends BaseIntegrationTests {
 				.verify();
 
 	}
+
 	@Test
 	public void squareReactiveCanCalculaeInput10Test() {
 		Mono<Response> response = webClient.get().uri("reactive-math/square/{input}/throwable", 10).retrieve()
 				.bodyToMono(Response.class).doOnNext(System.out::println).doOnError(System.err::println);
-		
+
 		StepVerifier.create(response).expectNextMatches(actual -> actual.getOutput() == (10 * 10)).expectComplete()
-		.verify();
-		
+				.verify();
+
 	}
 }
