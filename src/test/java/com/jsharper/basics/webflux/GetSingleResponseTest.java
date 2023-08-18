@@ -41,9 +41,56 @@ public class GetSingleResponseTest extends BaseIntegrationTests {
 
 		Flux<Response> output = this.webClient.get().uri("reactive-math/table/{input}", 5).retrieve()
 				.bodyToFlux(Response.class);
-		
-		
+
+		StepVerifier.create(output).expectSubscription().expectNextMatches(actual -> actual.getOutput() == 5)
+				.expectNextMatches(actual -> actual.getOutput() == 10)
+				.expectNextMatches(actual -> actual.getOutput() == 15)
+				.expectNextMatches(actual -> actual.getOutput() == 20)
+				.expectNextMatches(actual -> actual.getOutput() == 25)
+				.expectNextMatches(actual -> actual.getOutput() == 30)
+				.expectNextMatches(actual -> actual.getOutput() == 35)
+				.expectNextMatches(actual -> actual.getOutput() == 40)
+				.expectNextMatches(actual -> actual.getOutput() == 45)
+				.expectNextMatches(actual -> actual.getOutput() == 50).thenCancel().verify();
+	}
+
+	@Test
+	public void squareReactiveFluxMultiplicationTest() {
+
+		Flux<Response> output = this.webClient.get().uri("reactive-math/table/{input}/stream", 5).retrieve()
+				.bodyToFlux(Response.class);
+
+		StepVerifier.create(output).expectSubscription().expectNextCount(10).thenCancel().verify();
+
+	}
+
+	@Test
+	public void squareReactiveFluxMultiplicationOutputTest() {
+
+		Flux<Response> output = this.webClient.get().uri("reactive-math/table/{input}/stream", 5).retrieve()
+				.bodyToFlux(Response.class);
+
+		StepVerifier.create(output).expectSubscription().expectNextMatches(actual -> actual.getOutput() == 5)
+				.expectNextMatches(actual -> actual.getOutput() == 10)
+				.expectNextMatches(actual -> actual.getOutput() == 15)
+				.expectNextMatches(actual -> actual.getOutput() == 20)
+				.expectNextMatches(actual -> actual.getOutput() == 25)
+				.expectNextMatches(actual -> actual.getOutput() == 30)
+				.expectNextMatches(actual -> actual.getOutput() == 35)
+				.expectNextMatches(actual -> actual.getOutput() == 40)
+				.expectNextMatches(actual -> actual.getOutput() == 45)
+				.expectNextMatches(actual -> actual.getOutput() == 50).expectComplete().verify();
+
+	}
+
+	@Test
+	public void squareReactiveFluxMultiplicationOutputTest2() {
+
+		Flux<Response> output = this.webClient.get().uri("reactive-math/table/{input}/stream-list", 5).retrieve()
+				.bodyToFlux(Response.class);
+
 		StepVerifier.create(output).expectSubscription()
+		.expectNextMatches(actual -> actual.getOutput() == 0)
 		.expectNextMatches(actual -> actual.getOutput() == 5)
 				.expectNextMatches(actual -> actual.getOutput() == 10)
 				.expectNextMatches(actual -> actual.getOutput() == 15)
@@ -53,8 +100,7 @@ public class GetSingleResponseTest extends BaseIntegrationTests {
 				.expectNextMatches(actual -> actual.getOutput() == 35)
 				.expectNextMatches(actual -> actual.getOutput() == 40)
 				.expectNextMatches(actual -> actual.getOutput() == 45)
-				.expectNextMatches(actual -> actual.getOutput() == 50)
-				.thenCancel()
-				.verify();
+				.expectNextMatches(actual -> actual.getOutput() == 50).expectComplete().verify();
+
 	}
 }
