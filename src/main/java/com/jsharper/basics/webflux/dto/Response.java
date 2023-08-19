@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 //@ToString
-@SuppressWarnings("unused")
 public class Response {
 
 	private Date date = new Date();
