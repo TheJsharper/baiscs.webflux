@@ -2,10 +2,12 @@ package com.jsharper.basics.webflux;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.jsharper.basics.webflux.dto.Response;
+import com.jsharper.basics.webflux.exceptions.InputFailedValidationResponse;
 
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -51,5 +53,19 @@ public class BadRequestTest extends BaseIntegrationTests {
 		StepVerifier.create(response).expectNextMatches(actual -> actual.getOutput() == (10 * 10)).expectComplete()
 				.verify();
 
+	}
+
+	@Test
+	public void squareReactiveBadRequestByInput9WithExchangeTest() {
+		Mono<Object> response = webClient.get().uri("reactive-math/square/{input}/throwable", 9)
+				.exchangeToMono(this::exchange).doOnNext(System.out::println).doOnError(System.err::println);
+
+		StepVerifier.create(response).expectNextCount(1).verifyComplete();
+
+	}
+
+	private Mono<Object> exchange(ClientResponse cr) {
+		return cr.statusCode().is2xxSuccessful() ? cr.bodyToMono(Response.class)
+				: cr.bodyToMono(InputFailedValidationResponse.class);
 	}
 }
